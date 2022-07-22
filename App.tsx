@@ -6,7 +6,7 @@ import {
 import { NativeBaseProvider, StatusBar } from "native-base";
 import React from "react";
 import { Loading } from "./src/components/Loading";
-import { Signin } from "./src/screens/Signin";
+import { Routes } from "./src/routes/index";
 import { THEME } from "./src/styles/theme";
 
 export const App = () => {
@@ -22,7 +22,7 @@ export const App = () => {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <Signin /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </NativeBaseProvider>
   );
 };

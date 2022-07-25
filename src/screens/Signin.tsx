@@ -1,16 +1,50 @@
 import { Box, Heading, Icon, useTheme, VStack } from "native-base";
+import auth from "@react-native-firebase/auth"
 import React, { useState } from "react";
 import Logo from "../assets/logo_primary.svg";
 import { Input } from "../components/Input";
 import { Envelope, Key } from "phosphor-react-native";
 import { Button } from "../components/Button";
+import { Alert } from "react-native";
 
 export const Signin = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const { colors } = useTheme();
   const [inputsContent, setInputsContent] = useState({
     email: "",
     password: "",
   });
+
+  const handleSignIn = () => {
+    const { email, password } = inputsContent;
+
+    if (!email || !password) {
+      return Alert.alert("Enter", "Please fill all fields");
+    }
+
+    setIsLoading(true);
+
+    auth()
+    .createUserWithEmailAndPassword(email, password)
+    .then((response) => {
+      console.log(response);
+      setIsLoading(false);
+    })
+    .catch((error) => {
+      console.log(error);
+      setIsLoading(false);
+
+      if (error.code === 'auth/invalid-email') {
+        return Alert.alert("Invalid email", "Please enter a valid email");
+      } else if (error.code === 'auth/wrong-password') {
+        return Alert.alert("Enter", "E-mail or password is incorrect");
+      } else if (error.code === 'auth/user-not-found') {
+        return Alert.alert('Enter', 'E-mail or password is incorrect');
+      } else {
+        return Alert.alert("Error", "Something went wrong");
+      }
+    })
+  }
 
   return (
     <VStack 
@@ -51,6 +85,8 @@ export const Signin = () => {
           title={'Login'}
           _pressed={{ bg: 'green.500' }}
           mb={3}
+          onPress={handleSignIn}
+          isLoading={isLoading}
         />
 
         <Button 
